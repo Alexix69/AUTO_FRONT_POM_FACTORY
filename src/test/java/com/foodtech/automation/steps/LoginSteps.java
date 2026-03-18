@@ -1,7 +1,13 @@
 package com.foodtech.automation.steps;
 
 import com.foodtech.automation.pages.LoginPage;
+import com.foodtech.automation.utils.EnvironmentChecker;
 import net.serenitybdd.annotations.Step;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -20,8 +26,31 @@ public class LoginSteps {
 
     LoginPage loginPage;
 
+    @Step("Validate environment availability")
+    public void validateEnvironmentAvailability() {
+        if (!EnvironmentChecker.isFrontendAvailable()) {
+            throw new RuntimeException("Frontend not available");
+        }
+    }
+
     @Step("Open the login page")
     public void openLoginPage() {
+        validateEnvironmentAvailability();
+        loginPage.open();
+    }
+
+    @Step("Register user with email: '{0}'")
+    public void register(String email, String password) {
+        loginPage.openRegisterMode();
+
+        String username = buildUsernameFromEmail(email);
+        loginPage.enterEmail(email);
+        loginPage.enterUsername(username);
+        loginPage.enterPassword(password);
+        loginPage.clickLogin();
+
+        waitForDashboardRedirect();
+        resetAuthState();
         loginPage.open();
     }
 
@@ -49,5 +78,24 @@ public class LoginSteps {
         String currentUrl = loginPage.getDriver().getCurrentUrl();
         assertThat("User should remain on the login page after failed authentication",
                 currentUrl.contains("/login"), is(true));
+    }
+
+    private void waitForDashboardRedirect() {
+        WebDriverWait wait = new WebDriverWait(loginPage.getDriver(), Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.urlContains("/mesero"));
+    }
+
+    private void resetAuthState() {
+        loginPage.getDriver().manage().deleteAllCookies();
+        if (loginPage.getDriver() instanceof JavascriptExecutor) {
+            ((JavascriptExecutor) loginPage.getDriver())
+                    .executeScript("window.localStorage.clear(); window.sessionStorage.clear();");
+        }
+    }
+
+    private String buildUsernameFromEmail(String email) {
+        String localPart = email.split("@", 2)[0];
+        String sanitized = localPart.replaceAll("[^a-zA-Z0-9]", "_");
+        return sanitized.isEmpty() ? "user" : sanitized;
     }
 }

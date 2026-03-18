@@ -2,10 +2,16 @@ package com.foodtech.automation.stepdefinitions;
 
 import com.foodtech.automation.steps.LoginSteps;
 import com.foodtech.automation.steps.NavigationSteps;
+import com.foodtech.automation.utils.EvidenceManager;
+import com.foodtech.automation.utils.TestDataFactory;
+import io.cucumber.java.AfterStep;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import net.serenitybdd.core.Serenity;
 import net.serenitybdd.annotations.Steps;
 
 /**
@@ -18,9 +24,8 @@ import net.serenitybdd.annotations.Steps;
  */
 public class LoginStepDefinitions {
 
-    // Test credentials — valid account (Constitution §3: no shared state)
-    private static final String VALID_EMAIL    = "test@restaurant.com";
-    private static final String VALID_PASSWORD = "password123";
+    private String dynamicEmail;
+    private String dynamicPassword;
 
     // Test credentials — invalid account (guaranteed not to exist)
     private static final String INVALID_EMAIL    = "wrong@email.com";
@@ -31,6 +36,12 @@ public class LoginStepDefinitions {
 
     @Steps
     NavigationSteps navigationSteps;
+
+    @Before
+    public void setUpScenario() {
+        dynamicEmail = TestDataFactory.generateEmail();
+        dynamicPassword = TestDataFactory.getPassword();
+    }
 
     // -------------------------------------------------------------------------
     // Given
@@ -47,7 +58,8 @@ public class LoginStepDefinitions {
 
     @When("the user enters valid credentials")
     public void whenUserEntersValidCredentials() {
-        loginSteps.enterCredentials(VALID_EMAIL, VALID_PASSWORD);
+        loginSteps.register(dynamicEmail, dynamicPassword);
+        loginSteps.enterCredentials(dynamicEmail, dynamicPassword);
     }
 
     // -------------------------------------------------------------------------
@@ -89,5 +101,11 @@ public class LoginStepDefinitions {
     @And("the user should remain on the login page")
     public void thenUserShouldRemainOnLoginPage() {
         loginSteps.shouldBeOnLoginPage();
+    }
+
+    @AfterStep
+    public void captureEvidence(Scenario scenario) {
+        String name = scenario.getName() + "_" + EvidenceManager.timestamp();
+        EvidenceManager.saveScreenshot(Serenity.getDriver(), name);
     }
 }

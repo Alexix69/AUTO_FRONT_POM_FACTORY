@@ -23,6 +23,12 @@ public class LoginPage extends PageObject {
     @FindBy(css = "[data-testid='submit-btn']")
     private WebElementFacade submitButton;
 
+    @FindBy(css = "[data-testid='toggle-mode-btn']")
+    private WebElementFacade toggleModeButton;
+
+    @FindBy(css = "[data-testid='username-input']")
+    private WebElementFacade usernameInput;
+
     @FindBy(css = "[data-testid='error-message']")
     private WebElementFacade errorMessage;
 
@@ -40,6 +46,23 @@ public class LoginPage extends PageObject {
     public void enterPassword(String password) {
         passwordInput.waitUntilVisible().clear();
         passwordInput.sendKeys(password);
+    }
+
+    /**
+     * Types the given username into the username input field.
+     */
+    public void enterUsername(String username) {
+        usernameInput.waitUntilVisible().clear();
+        usernameInput.sendKeys(username);
+    }
+
+    /**
+     * Switches the form to register mode if it is not already active.
+     */
+    public void openRegisterMode() {
+        if (!usernameInput.isPresent()) {
+            toggleModeButton.waitUntilClickable().click();
+        }
     }
 
     /**
