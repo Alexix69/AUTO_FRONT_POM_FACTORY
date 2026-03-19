@@ -61,6 +61,15 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    def baseUrl = System.getProperty("webdriver.base.url")
+    def backendBaseUrl = System.getProperty("foodtech.backend.base.url")
+
+    if (baseUrl) {
+        systemProperty "webdriver.base.url", baseUrl
+    }
+    if (backendBaseUrl) {
+        systemProperty "foodtech.backend.base.url", backendBaseUrl
+    }
 }
 
 serenity {

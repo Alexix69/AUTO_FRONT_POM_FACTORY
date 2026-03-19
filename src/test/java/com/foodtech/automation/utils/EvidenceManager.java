@@ -56,6 +56,12 @@ public final class EvidenceManager {
         return LocalDateTime.now().format(FORMATTER);
     }
 
+    public static String buildScenarioFileName(String scenarioName, String suffix) {
+        String base = sanitize(scenarioName);
+        String tag = suffix == null || suffix.isBlank() ? "snapshot" : sanitize(suffix);
+        return base + "_" + tag + "_" + timestamp();
+    }
+
     private static String sanitize(String name) {
         return name.replaceAll("[^a-zA-Z0-9_-]", "_");
     }

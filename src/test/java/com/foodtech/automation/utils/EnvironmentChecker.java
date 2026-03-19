@@ -12,19 +12,19 @@ import java.time.Duration;
  */
 public final class EnvironmentChecker {
 
-    private static final String LOGIN_URL = "http://localhost:5173/login";
     private static final Duration TIMEOUT = Duration.ofSeconds(2);
 
     private EnvironmentChecker() {
     }
 
-    public static boolean isFrontendAvailable() {
+    public static boolean isFrontendAvailable(String baseUrl) {
+        String loginUrl = buildLoginUrl(baseUrl);
         HttpClient client = HttpClient.newBuilder()
                 .connectTimeout(TIMEOUT)
                 .build();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(LOGIN_URL))
+            .uri(URI.create(loginUrl))
                 .timeout(TIMEOUT)
                 .GET()
                 .build();
@@ -39,5 +39,13 @@ public final class EnvironmentChecker {
             }
             return false;
         }
+    }
+
+    public static String buildLoginUrl(String baseUrl) {
+        String trimmed = baseUrl == null ? "" : baseUrl.trim();
+        if (trimmed.endsWith("/")) {
+            return trimmed + "login";
+        }
+        return trimmed + "/login";
     }
 }

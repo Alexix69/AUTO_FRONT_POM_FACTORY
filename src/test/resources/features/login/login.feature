@@ -1,17 +1,18 @@
-Feature: User Authentication
+Feature: User authentication
   As a restaurant staff member
-  I want to authenticate into the FoodTech system
-  So that I can access the restaurant management features
+  I want to authenticate in the FoodTech system
+  So that I can access the restaurant operations view
 
-  Scenario: Successful login with valid credentials
-    Given the user is on the login page
-    When the user enters valid credentials
-    And the user submits the login form
-    Then the user should be redirected to the main operational view
+  @positiveLogin
+  Scenario: Successful access with valid credentials
+    Given the user starts an authentication session
+    When the user authenticates with valid credentials
+    And the user submits the authentication request
+    Then access to the operational view should be granted
 
-  Scenario: Failed login with invalid credentials
-    Given the user is on the login page
-    When the user enters invalid credentials
-    And the user submits the login form
-    Then the user should see an error message on the page
-    And the user should remain on the login page
+  Scenario: Access denied with invalid credentials
+    Given the user starts an authentication session
+    When the user authenticates with invalid credentials
+    And the user submits the authentication request
+    Then an authentication error should be presented
+    And access should remain on the authentication screen

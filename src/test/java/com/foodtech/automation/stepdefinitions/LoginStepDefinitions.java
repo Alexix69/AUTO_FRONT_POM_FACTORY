@@ -3,9 +3,10 @@ package com.foodtech.automation.stepdefinitions;
 import com.foodtech.automation.steps.LoginSteps;
 import com.foodtech.automation.steps.NavigationSteps;
 import com.foodtech.automation.utils.EvidenceManager;
+import com.foodtech.automation.utils.TestContext;
 import com.foodtech.automation.utils.TestDataFactory;
 import io.cucumber.java.AfterStep;
-import io.cucumber.java.Before;
+import io.cucumber.java.After;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -24,8 +25,6 @@ import net.serenitybdd.annotations.Steps;
  */
 public class LoginStepDefinitions {
 
-    private String dynamicEmail;
-    private String dynamicPassword;
 
     // Test credentials — invalid account (guaranteed not to exist)
     private static final String INVALID_EMAIL    = "wrong@email.com";
@@ -37,18 +36,12 @@ public class LoginStepDefinitions {
     @Steps
     NavigationSteps navigationSteps;
 
-    @Before
-    public void setUpScenario() {
-        dynamicEmail = TestDataFactory.generateEmail();
-        dynamicPassword = TestDataFactory.getPassword();
-    }
-
     // -------------------------------------------------------------------------
     // Given
     // -------------------------------------------------------------------------
 
-    @Given("the user is on the login page")
-    public void givenUserIsOnLoginPage() {
+    @Given("the user starts an authentication session")
+    public void givenUserStartsAuthenticationSession() {
         loginSteps.openLoginPage();
     }
 
@@ -56,18 +49,21 @@ public class LoginStepDefinitions {
     // When — User Story 1: valid credentials
     // -------------------------------------------------------------------------
 
-    @When("the user enters valid credentials")
-    public void whenUserEntersValidCredentials() {
-        loginSteps.register(dynamicEmail, dynamicPassword);
-        loginSteps.enterCredentials(dynamicEmail, dynamicPassword);
+    @When("the user authenticates with valid credentials")
+    public void whenUserAuthenticatesWithValidCredentials() {
+        TestDataFactory.RegistrationData user = TestContext.getUser();
+        if (user == null) {
+            throw new IllegalStateException("User setup failed: backend registration unavailable");
+        }
+        loginSteps.enterCredentials(user.email(), user.password());
     }
 
     // -------------------------------------------------------------------------
     // When — User Story 2: invalid credentials
     // -------------------------------------------------------------------------
 
-    @When("the user enters invalid credentials")
-    public void whenUserEntersInvalidCredentials() {
+    @When("the user authenticates with invalid credentials")
+    public void whenUserAuthenticatesWithInvalidCredentials() {
         loginSteps.enterCredentials(INVALID_EMAIL, INVALID_PASSWORD);
     }
 
@@ -75,8 +71,8 @@ public class LoginStepDefinitions {
     // When — shared
     // -------------------------------------------------------------------------
 
-    @And("the user submits the login form")
-    public void whenUserSubmitsLoginForm() {
+    @And("the user submits the authentication request")
+    public void whenUserSubmitsAuthenticationRequest() {
         loginSteps.submitLoginForm();
     }
 
@@ -84,8 +80,8 @@ public class LoginStepDefinitions {
     // Then — User Story 1
     // -------------------------------------------------------------------------
 
-    @Then("the user should be redirected to the main operational view")
-    public void thenUserShouldBeRedirected() {
+    @Then("access to the operational view should be granted")
+    public void thenAccessToOperationalViewShouldBeGranted() {
         navigationSteps.shouldBeOnDashboard();
     }
 
@@ -93,19 +89,28 @@ public class LoginStepDefinitions {
     // Then — User Story 2
     // -------------------------------------------------------------------------
 
-    @Then("the user should see an error message on the page")
-    public void thenUserShouldSeeErrorMessage() {
+    @Then("an authentication error should be presented")
+    public void thenAuthenticationErrorShouldBePresented() {
         loginSteps.shouldSeeErrorMessage();
     }
 
-    @And("the user should remain on the login page")
-    public void thenUserShouldRemainOnLoginPage() {
+    @And("access should remain on the authentication screen")
+    public void thenAccessShouldRemainOnAuthenticationScreen() {
         loginSteps.shouldBeOnLoginPage();
     }
 
     @AfterStep
     public void captureEvidence(Scenario scenario) {
-        String name = scenario.getName() + "_" + EvidenceManager.timestamp();
+        if (scenario.isFailed()) {
+            String name = EvidenceManager.buildScenarioFileName(scenario.getName(), "failed_step");
+            EvidenceManager.saveScreenshot(Serenity.getDriver(), name);
+        }
+    }
+
+    @After
+    public void captureFinalEvidence(Scenario scenario) {
+        String suffix = scenario.isFailed() ? "failed_final" : "final";
+        String name = EvidenceManager.buildScenarioFileName(scenario.getName(), suffix);
         EvidenceManager.saveScreenshot(Serenity.getDriver(), name);
     }
 }

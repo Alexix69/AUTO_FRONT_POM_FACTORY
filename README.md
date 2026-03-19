@@ -1,6 +1,10 @@
 # AUTO_FRONT_POM_FACTORY
 
-Frontend UI automation project using the **Page Object Model + Factory** pattern.
+Frontend UI automation for FoodTech using Page Object Model + Page Factory with Serenity BDD.
+
+## Purpose
+
+Validate the authentication flow (successful and failed login) with clean POM architecture and Serenity reporting, ready for academic/professional evaluation.
 
 ## Stack
 
@@ -15,13 +19,54 @@ Frontend UI automation project using the **Page Object Model + Factory** pattern
 ```
 src/
   test/
-    java/       ← Step definitions, page objects, factories
-    resources/  ← serenity.conf, cucumber options
-features/       ← Gherkin feature files
+    java/       - steps, stepdefinitions, pages, utils, runners
+    resources/  - serenity.conf, logback-test.xml, features
 ```
 
-## Workflow
+## Scenarios Covered
 
-This project follows **Spec-Driven Development** using [Spec-Kit](https://github.com/github/spec-kit).
+- Successful access with valid credentials
+- Access denied with invalid credentials
 
-Branch strategy: `main` → `develop` → `feature/*`
+## Prerequisites
+
+- Java 21
+- Chrome installed
+- FoodTech frontend running at the configured base URL
+
+## Configuration
+
+Base URL is resolved in this order:
+
+1) webdriver.base.url (system property)
+2) WEBDRIVER_BASE_URL (env)
+3) default http://localhost:5173
+
+Backend registration URL is resolved in this order:
+
+1) foodtech.backend.base.url (system property)
+2) FOODTECH_BACKEND_BASE_URL (env)
+3) default http://localhost:8080
+
+## How to Execute
+
+```bash
+./gradlew clean test
+```
+
+Reports:
+
+- Serenity report: target/site/serenity/index.html
+- Evidence folder: evidences/<timestamp>/
+
+## Workflow (SpecKit / SDD)
+
+This repository follows Spec-Driven Development using SpecKit in the workspace root:
+
+constitution -> specify -> plan -> tasks -> implement
+
+## Notes for Evaluators
+
+- Scenarios are independent and register a fresh user via backend before the positive login.
+- Evidence is captured per scenario (final) and on failure to avoid noise.
+- POM responsibilities are enforced: Page Objects are interaction-only, Steps perform validation.
