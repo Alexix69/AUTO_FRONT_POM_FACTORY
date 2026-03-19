@@ -52,6 +52,13 @@ public final class EvidenceManager {
         }
     }
 
+    public static void captureStep(WebDriver driver, String stepName) {
+        String scenarioName = TestContext.getScenarioName();
+        String base = scenarioName == null || scenarioName.isBlank() ? "scenario" : scenarioName;
+        String fileName = buildScenarioFileName(base, stepName);
+        saveScreenshot(driver, fileName);
+    }
+
     public static String timestamp() {
         return LocalDateTime.now().format(FORMATTER);
     }

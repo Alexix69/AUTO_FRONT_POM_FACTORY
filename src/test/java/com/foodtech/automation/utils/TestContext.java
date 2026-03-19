@@ -6,6 +6,7 @@ package com.foodtech.automation.utils;
 public final class TestContext {
 
     private static final ThreadLocal<TestDataFactory.RegistrationData> USER = new ThreadLocal<>();
+    private static final ThreadLocal<String> SCENARIO_NAME = new ThreadLocal<>();
 
     private TestContext() {
     }
@@ -20,5 +21,14 @@ public final class TestContext {
 
     public static void clear() {
         USER.remove();
+        SCENARIO_NAME.remove();
+    }
+
+    public static void setScenarioName(String scenarioName) {
+        SCENARIO_NAME.set(scenarioName);
+    }
+
+    public static String getScenarioName() {
+        return SCENARIO_NAME.get();
     }
 }

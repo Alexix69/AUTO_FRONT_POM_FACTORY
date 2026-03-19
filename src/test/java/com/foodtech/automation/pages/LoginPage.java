@@ -3,6 +3,10 @@ package com.foodtech.automation.pages;
 import net.serenitybdd.core.pages.PageObject;
 import net.serenitybdd.core.pages.WebElementFacade;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 /**
  * Page Object for the FoodTech Login page.
@@ -13,6 +17,8 @@ import org.openqa.selenium.support.FindBy;
  * - Contains NO assertions and NO business logic
  */
 public class LoginPage extends PageObject {
+
+    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(5);
 
     @FindBy(css = "[data-testid='email-input']")
     private WebElementFacade emailInput;
@@ -47,6 +53,25 @@ public class LoginPage extends PageObject {
      */
     public void clickLogin() {
         submitButton.waitUntilClickable().click();
+    }
+
+    public void waitForEmailValueNotEmpty() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), DEFAULT_TIMEOUT);
+        wait.until(ExpectedConditions.attributeToBeNotEmpty(emailInput, "value"));
+    }
+
+    public void waitForPasswordValueNotEmpty() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), DEFAULT_TIMEOUT);
+        wait.until(ExpectedConditions.attributeToBeNotEmpty(passwordInput, "value"));
+    }
+
+    public void waitForErrorMessageVisible() {
+        errorMessage.waitUntilVisible();
+    }
+
+    public void waitForLoginUrl() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), DEFAULT_TIMEOUT);
+        wait.until(ExpectedConditions.urlContains("/login"));
     }
 
     /**
