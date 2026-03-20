@@ -1,0 +1,25 @@
+# Gradle
+.gradle/
+build/
+target/
+
+# IDE
+.idea/
+.eclipse/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Serenity reports
+target/site/serenity/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Wrapper (jar is binary — track in VCS for reproducibility)
+# gradle/wrapper/gradle-wrapper.jar
