@@ -61,6 +61,7 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    jvmArgs "-Djava.net.preferIPv4Stack=true"
     def baseUrl = System.getProperty("webdriver.base.url")
     def backendBaseUrl = System.getProperty("foodtech.backend.base.url")
 

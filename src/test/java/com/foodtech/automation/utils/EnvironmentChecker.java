@@ -18,7 +18,7 @@ public final class EnvironmentChecker {
     }
 
     public static boolean isFrontendAvailable(String baseUrl) {
-        String loginUrl = buildLoginUrl(baseUrl);
+        String loginUrl = buildLoginUrl(baseUrl).replace("localhost", "127.0.0.1");
         HttpClient client = HttpClient.newBuilder()
                 .connectTimeout(TIMEOUT)
                 .build();

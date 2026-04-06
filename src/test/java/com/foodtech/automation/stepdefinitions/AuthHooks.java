@@ -23,4 +23,9 @@ public class AuthHooks {
     public void clearUserContext() {
         TestContext.clear();
     }
+
+    @After("@positiveRegister")
+    public void clearRegistrationContext() {
+        TestContext.clear();
+    }
 }
