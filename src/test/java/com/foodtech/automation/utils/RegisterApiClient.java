@@ -7,9 +7,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
-/**
- * Simple client to register users via the real backend endpoint.
- */
 public final class RegisterApiClient {
 
     private static final Duration TIMEOUT = Duration.ofSeconds(5);
@@ -36,7 +33,6 @@ public final class RegisterApiClient {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             int status = response.statusCode();
-            System.out.println("[RegisterApiClient] user=" + user.email() + " status=" + status);
             if (status != 200 && status != 201) {
                 throw new IllegalStateException("User setup failed: backend registration unavailable (status " + status + ")");
             }
@@ -51,14 +47,15 @@ public final class RegisterApiClient {
     private static String buildRegisterUrl(String baseUrl) {
         String trimmed = baseUrl == null ? "" : baseUrl.trim();
         if (trimmed.endsWith("/")) {
-            return trimmed + "api/auth/register";
+            return trimmed + TestConfig.REGISTER_PATH.substring(1);
         }
-        return trimmed + "/api/auth/register";
+        return trimmed + TestConfig.REGISTER_PATH;
     }
 
     private static String buildPayload(TestDataFactory.RegistrationData user) {
         return "{\"username\":\"" + user.username() + "\"," +
                 "\"email\":\"" + user.email() + "\"," +
-                "\"password\":\"" + user.password() + "\"}";
+                "\"password\":\"" + user.password() + "\"," +
+                "\"role\":\"MESERO\"}";
     }
 }

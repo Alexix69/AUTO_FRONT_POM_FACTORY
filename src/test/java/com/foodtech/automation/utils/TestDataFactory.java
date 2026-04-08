@@ -2,13 +2,13 @@ package com.foodtech.automation.utils;
 
 import java.time.Instant;
 
-/**
- * Factory for deterministic test data.
- */
 public final class TestDataFactory {
 
     private static final String PASSWORD_PREFIX = "Pass";
     private static final String USERNAME_PREFIX = "user";
+
+    public static final String INVALID_EMAIL = "wrong@email.com";
+    public static final String INVALID_PASSWORD = "wrongpass";
 
     private TestDataFactory() {
     }

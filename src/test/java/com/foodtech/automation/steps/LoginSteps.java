@@ -4,21 +4,13 @@ import com.foodtech.automation.pages.LoginPage;
 import com.foodtech.automation.utils.EnvironmentChecker;
 import com.foodtech.automation.utils.EvidenceManager;
 import com.foodtech.automation.utils.TestConfig;
+import com.foodtech.automation.utils.TestDataFactory;
 import net.serenitybdd.annotations.Step;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-/**
- * Serenity Step Library for login actions.
- * <p>
- * Responsibilities (Constitution §5, §6):
- * - Orchestrates calls to LoginPage Page Object
- * - Owns all assertions related to the login page state
- * - Each method is annotated with @Step for Serenity evidence capture
- * - Contains NO Cucumber glue code
- */
 public class LoginSteps {
 
     LoginPage loginPage;
@@ -38,6 +30,14 @@ public class LoginSteps {
     public void openLoginPage() {
         validateEnvironmentAvailability();
         loginPage.open();
+    }
+
+    @Step("Enter credentials from context")
+    public void enterCredentials(TestDataFactory.RegistrationData user) {
+        if (user == null) {
+            throw new IllegalStateException("User setup failed: backend registration unavailable");
+        }
+        enterCredentials(user.email(), user.password());
     }
 
     @Step("Enter credentials — email: '{0}'")

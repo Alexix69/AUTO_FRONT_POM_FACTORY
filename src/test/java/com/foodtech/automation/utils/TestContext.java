@@ -1,8 +1,5 @@
 package com.foodtech.automation.utils;
 
-/**
- * Thread-local storage for per-scenario test data.
- */
 public final class TestContext {
 
     private static final ThreadLocal<TestDataFactory.RegistrationData> USER = new ThreadLocal<>();

@@ -1,5 +1,7 @@
 package com.foodtech.automation.utils;
 
+import io.cucumber.java.Scenario;
+import net.serenitybdd.core.Serenity;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -13,9 +15,6 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-/**
- * Stores structured evidence per execution.
- */
 public final class EvidenceManager {
 
     private static final Path EXECUTION_DIR = initExecutionDir();
@@ -48,8 +47,20 @@ public final class EvidenceManager {
         try {
             Files.copy(screenshot.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            System.err.println("Unable to save screenshot to " + target + ": " + e.getMessage());
         }
+    }
+
+    public static void captureIfFailed(Scenario scenario) {
+        if (scenario.isFailed()) {
+            String name = buildScenarioFileName(scenario.getName(), "failed_step");
+            saveScreenshot(Serenity.getDriver(), name);
+        }
+    }
+
+    public static void captureFinal(Scenario scenario) {
+        String suffix = scenario.isFailed() ? "failed_final" : "final";
+        String name = buildScenarioFileName(scenario.getName(), suffix);
+        saveScreenshot(Serenity.getDriver(), name);
     }
 
     public static void captureStep(WebDriver driver, String stepName) {

@@ -3,6 +3,9 @@ Feature: User authentication
   I want to authenticate in the FoodTech system
   So that I can access the restaurant operations view
 
+  Note: These scenarios are part of the baseline implementation (HU-AUTH-001,
+  specs/001-login-auth). They are not assigned new feature TC IDs.
+
   @positiveLogin
   Scenario: Successful access with valid credentials
     Given the user starts an authentication session
@@ -10,6 +13,7 @@ Feature: User authentication
     And the user submits the authentication request
     Then access to the operational view should be granted
 
+  @negativeLogin
   Scenario: Access denied with invalid credentials
     Given the user starts an authentication session
     When the user authenticates with invalid credentials

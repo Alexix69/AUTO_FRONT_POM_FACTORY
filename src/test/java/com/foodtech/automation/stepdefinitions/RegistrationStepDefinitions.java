@@ -8,7 +8,6 @@ import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import net.serenitybdd.core.Serenity;
 import net.serenitybdd.annotations.Steps;
 
 public class RegistrationStepDefinitions {
@@ -93,16 +92,11 @@ public class RegistrationStepDefinitions {
 
     @AfterStep
     public void captureEvidence(Scenario scenario) {
-        if (scenario.isFailed()) {
-            String name = EvidenceManager.buildScenarioFileName(scenario.getName(), "failed_step");
-            EvidenceManager.saveScreenshot(Serenity.getDriver(), name);
-        }
+        EvidenceManager.captureIfFailed(scenario);
     }
 
     @After
     public void captureFinalEvidence(Scenario scenario) {
-        String suffix = scenario.isFailed() ? "failed_final" : "final";
-        String name = EvidenceManager.buildScenarioFileName(scenario.getName(), suffix);
-        EvidenceManager.saveScreenshot(Serenity.getDriver(), name);
+        EvidenceManager.captureFinal(scenario);
     }
 }

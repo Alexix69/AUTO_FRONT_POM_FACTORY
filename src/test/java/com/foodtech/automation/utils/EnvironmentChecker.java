@@ -7,9 +7,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
-/**
- * Lightweight environment availability checker.
- */
 public final class EnvironmentChecker {
 
     private static final Duration TIMEOUT = Duration.ofSeconds(2);

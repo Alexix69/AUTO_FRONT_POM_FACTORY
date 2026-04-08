@@ -2,6 +2,7 @@ package com.foodtech.automation.steps;
 
 import com.foodtech.automation.pages.RegistrationPage;
 import com.foodtech.automation.utils.EvidenceManager;
+import com.foodtech.automation.utils.TestConfig;
 import com.foodtech.automation.utils.TestContext;
 import com.foodtech.automation.utils.TestDataFactory;
 import net.serenitybdd.annotations.Step;
@@ -18,9 +19,9 @@ public class RegistrationSteps {
     private static final String EXPECTED_ROLE_ERROR = "Debe seleccionar un rol para continuar";
 
     private static final Map<String, String> ROLE_REDIRECT_PATHS = Map.of(
-            "MESERO",    "/mesero",
-            "COCINERO",  "/cocina",
-            "BARTENDER", "/barra"
+            "MESERO",    TestConfig.ROUTE_MESERO,
+            "COCINERO",  TestConfig.ROUTE_COCINA,
+            "BARTENDER", TestConfig.ROUTE_BARRA
     );
 
     RegistrationPage registrationPage;
@@ -62,12 +63,6 @@ public class RegistrationSteps {
     public void openRoleDropdown() {
         registrationPage.openRoleDropdown();
         EvidenceManager.captureStep(registrationPage.getDriver(), "role_dropdown_open");
-    }
-
-    @Step("Select role option '{0}'")
-    public void selectRole(String role) {
-        registrationPage.selectRoleOption(role.toLowerCase());
-        EvidenceManager.captureStep(registrationPage.getDriver(), "role_selected_" + role.toLowerCase());
     }
 
     @Step("Select role '{0}' and submit the registration form")

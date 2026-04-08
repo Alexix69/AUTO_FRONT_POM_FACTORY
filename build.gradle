@@ -22,7 +22,6 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: "net.serenity-bdd.serenity-gradle-plugin"
 
-// T002: Java 21 source and target compatibility
 java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
@@ -36,26 +35,19 @@ ext {
     junit_jupiter_engine_version            = "6.0.3"
     junit_vintage_engine_version            = "6.0.3"
     logback_classic_version                 = "1.2.10"
-    assertj_core_version                    = "3.23.1"
 }
 
 dependencies {
-    // Serenity BDD core + Cucumber integration (POM pattern — no Screenplay deps)
     testImplementation "net.serenity-bdd:serenity-core:${serenity_version}"
     testImplementation "net.serenity-bdd:serenity-cucumber:${serenity_version}"
     testImplementation "net.serenity-bdd:serenity-ensure:${serenity_version}"
 
-    // JUnit Platform (required for Cucumber JUnit 5 engine)
     testImplementation "org.junit.platform:junit-platform-launcher:${junit_platform_launcher_version}"
     testImplementation "io.cucumber:cucumber-junit-platform-engine:${cucumber_junit_platform_engine_version}"
     testImplementation "org.junit.platform:junit-platform-suite:${junit_platform_suite_version}"
     testImplementation "org.junit.jupiter:junit-jupiter-engine:${junit_jupiter_engine_version}"
     testImplementation "org.junit.vintage:junit-vintage-engine:${junit_vintage_engine_version}"
 
-    // Assertions (Hamcrest bundled via serenity-core; AssertJ for advanced needs)
-    testImplementation "org.assertj:assertj-core:${assertj_core_version}"
-
-    // Logging
     implementation "ch.qos.logback:logback-classic:${logback_classic_version}"
 }
 
